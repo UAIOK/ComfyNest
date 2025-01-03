@@ -1,14 +1,23 @@
 from pydantic import BaseModel
+from typing import Optional
+import uuid
 
-# Модель для створення користувача
+# Модель користувача, який створюється
+
 class UserCreate(BaseModel):
     username: str
-    email: str
+    email: Optional[str] = None
+    full_name: Optional[str] = None
+    disabled: Optional[bool] = None
+    role: str
     password: str
 
-# Модель для користувача в базі даних
+    class Config:
+        orm_mode = True
+
+
 class UserInDB(UserCreate):
-    id: int
+    id: str = str(uuid.uuid4())  # Генерація id за замовчуванням
     hashed_password: str
 
 # Модель для повернення користувача

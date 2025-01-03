@@ -10,18 +10,25 @@ from datetime import timedelta
 # Конфігурація для роботи з FastAPI та Firebase
 app = FastAPI()
 
-# Реєстрація нового користувача
 @app.post("/register")
 async def register_user(user: UserCreate):
+    # Перевіряємо, чи користувач вже існує
     existing_user = get_user(db, user.username)
     if existing_user:
         raise HTTPException(status_code=400, detail="Username already registered")
 
-    hashed_password = get_password_hash(user.password)  # Хешуємо пароль
+    # Хешуємо пароль
+    hashed_password = get_password_hash(user.password)
+
+    # Створюємо нового користувача з автоматично згенерованим id
     new_user = UserInDB(**user.dict(), hashed_password=hashed_password)
 
-    create_user(db, new_user)  # Додаємо користувача до Firebase
+    # Додаємо користувача до бази даних
+    create_user(db, new_user)
+    
     return {"message": "User registered successfully"}
+
+
 
 # Аутентифікація користувача та отримання токену
 @app.post("/token")
