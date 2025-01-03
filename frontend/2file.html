@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComfyNest</title>
+</head>
+<body>
+    <h1>Введіть потребу:</h1>
+    <input type="text" id="needInput" placeholder="Наприклад: я хочу їсти">
+    <button onclick="sendNeed()">Надіслати</button>
+
+    <p id="response"></p>
+
+    <script>
+        async function sendNeed() {
+            const input = document.getElementById('needInput').value;
+
+            // Відправка запиту на бекенд
+            const response = await fetch('http://127.0.0.1:8000/needs/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ need: input }), // Передаємо потребу
+            });
+
+            // Отримання відповіді
+            const data = await response.json();
+            document.getElementById('response').innerText = data.message;
+        }
+    </script>
+</body>
+</html>
